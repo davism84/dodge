@@ -15,3 +15,8 @@ REDCap
 __to run__
 
 $ python manage.py runserver
+
+
+__to add an admin user__
+
+$ python manage.py createsuperuser
