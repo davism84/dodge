@@ -7,9 +7,13 @@ Prerequisites
 
 REDCap
 
-- must setup a project bookmark with the following link and Liink type set to __*Advanced Link*__:
+- Example bookmarks
+	must setup a project bookmark with the following link and Link type set to __*Advanced Link*__:
 
--     http://localhost:8000/redcap_rest/authorize
+	- http://localhost:8000/redcap_rest/authorize     - shows an authorization
+	- http://localhost:8000/redcap_rest/mrns/		  - show list of mrns for a given patient
+	- http://localhost:8000/redcap_rest/personinfo    - patient demographics (this can be a __Simple link__)
+    - http://localhost:8000/redcap_rest/add/		  - adds a patient (__you must add new patient on redcap side first__)
 
 
 __to run__
