@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '4!7x3-bj&blb9tvtn25u=6-+^k*s$m_4iwn7bywnb#n61k(3i4'
+SECRET_KEY = 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -131,5 +131,5 @@ STATIC_URL = '/static/'
 REDCAP = {
     'host': 'www.devctsiredcap.pitt.edu',
     'endpoint':'/redcap/api/',
-    'token':'2B2D43E2C82FCCEA57210B2C1F82BAF6',
+    'token':'<your TOKEN GOES HERE>',
 }
