@@ -18,11 +18,16 @@ from django.contrib import admin
 from . import views
 
 app_name = 'redcap_rest'
-
+ 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
  	url(r'^redcap_rest/getforms$', views.getforms, name='getforms'),
  	url(r'^redcap_rest/results/(?P<record_id>[0-9]+)$', views.results, name='results'),
 	url(r'^redcap_rest/detail$', views.detail, name='detail'), 	
 	url(r'^redcap_rest/authorize$', views.authorize, name='authorize'), 	
+ 	#url(r'^redcap_rest/person/(?P<record_id>[0-9]+)$', views.person, name='person'),	
+	url(r'^redcap_rest/personinfo/$', views.personinfo, name='personinfo'),	 	
+	url(r'^redcap_rest/mrns/$', views.mrns, name='mrns'),
+	url(r'^redcap_rest/add/$', views.add, name='add'),	 			
+	url(r'^save/$', views.save, name='save'),	
 ]

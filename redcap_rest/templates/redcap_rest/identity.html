@@ -1,0 +1,8 @@
+<h1>REDCap Patient -- MRNS</h1>
+<b>Name:</b> {{pid.name}}<br>
+<b>Redcap ID:</b> {{pid.record_id}}<br><br>
+<ul>
+{% for m in mrns %}
+    <li>{{ m.mrn }} -- {{ m.mrn_type }}</li>
+{% endfor %}
+</ul>
