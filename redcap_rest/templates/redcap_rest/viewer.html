@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Clinical Report Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.4.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+
+<!-- Latest compiled and minified Locales -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.js"></script>
+
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #566573;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+</style>
+</head>
+<h1>Report Viewer</h1>
+<body>
+<b>Study ID:</b> {{pid}}<br>
+<br>
+<div id="btnbar">
+{% for rpt in reports %}
+	<button id="button{{forloop.counter0}}" onclick="updateTable({{forloop.counter0}})">{{rpt}}</button>
+{% endfor %}	
+</div>
+<script type="text/javascript">
+var data = {{row|safe}}
+var cols = {{colHead|safe}}
+//var colHeaders = [[{'field':'EPIC_MRN','title':'EPIC_MRN'},{'field':'SEX','title':'SEX'},{'field':'BIRTH_DATE','title':'BIRTH_DATE'},{'field':'DEATH_DATE','title':'DEATH_DATE'},{'field':'RACE','title':'RACE'},{'field':'ETHNICITY','title':'ETHNICITY'},{'field':'PATIENT_STATUS','title':'PATIENT_STATUS'},{'field':'AGE','title':'AGE'}], [{'field':'EPIC_MRN','title':'EPIC_MRN'},{'field':'PROBLEM_CATEGORY','title':'PROBLEM_CATEGORY'},{'field':'RELATION','title':'RELATION'},{'field':'AGE_OF_ONSET','title':'AGE_OF_ONSET'},{'field':'COMMENTS','title':'COMMENTS'}], [{'field':'EPIC_MRN','title':'EPIC_MRN'},{'field':'CONTACT_DATE','title':'CONTACT_DATE', 'sortable':'true'},{'field':'HEIGHT','title':'HEIGHT'},{'field':'WEIGHT','title':'WEIGHT'},{'field':'BMI','title':'BMI'}]]
+//console.log(colHeaders)
+$(document).ready(function() {
+    //$('#dtable').bootstrapTable({
+    //    columns: colHeaders[0],
+    //    data: data[0]
+    //});
+    updateTable(0);  // load the first report
+});
+
+function updateTable(index) {
+	//$('#dtable').bootstrapTable('load', data[index]);
+	$('#dtable').bootstrapTable('destroy');
+	$('#dtable').bootstrapTable({
+        columns: cols[index],
+        data: data[index],
+        showToggle: true,
+//        showColumns: true,
+        height: 500,
+        pagination: true,
+        search: true,
+        striped: true,
+        sortable: true
+    });
+}
+
+
+</script>
+
+<table id="dtable" class="display" width="100%"></table>
+</body>
+</html>

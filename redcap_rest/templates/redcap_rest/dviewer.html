@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Clinical Report Viewer</title>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.4.js">
+</script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js">
+</script>
+<style>
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #566573;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+}
+</style>
+</head>
+<h1>Clinical Report Viewer</h1>
+<body>
+<b>Study ID:</b> {{pid}}<br>
+<ul>
+{% for rpt in reports %}
+    <li><a href="file='{{ rpt }}'"><i class="fa fa-file-text-o" aria-hidden="true"></i> {{ rpt }}</a></li>
+{% endfor %}
+</ul>
+<br>
+<script type="text/javascript">
+//var data = [["075234774", "Casto", "Lien", "Lu", "F", "05/28/1981", "", "OTHER ASIAN", "NOT HISPANIC OR LATINO", "ALIVE", "35"]]
+var data = {{row|safe}}
+var colHeaders = [{{colHead|safe}}]
+$(document).ready(function() {
+	$('#example').DataTable( {
+		data: data,
+		columns: colHeaders
+	});
+} );
+</script>
+<table id="example" class="display" width="100%"></table>
+</body>
+</html>

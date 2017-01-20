@@ -3,10 +3,14 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, get_list_or_404
 from django.conf import settings
 from django.contrib.auth.models import User
+from .models import Project
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
+import os, sys
+import csv
+import ast
 
 from .models import LabResult, Identity, Mrn
 from .forms import IdentityForm
@@ -81,7 +85,7 @@ def authorize(request):
 		# read the content from the response, type is <byte>
 		data = res.read()
 		#print(type(data))
-		print(data)
+		#print(data)
 		
 		# decode the data body content from <byte> using utf-8 to a string
 		decoded = data.decode("utf-8")
@@ -265,3 +269,125 @@ def validate(request):
 			return ''
 		return response
 	return ''
+
+# report/data viewer endpoint
+@api_view(['POST'])
+def dv(request):
+	if request.method == 'POST':
+		if  rcAuthenticate(request):
+			try:
+				# get the record id
+				record_id = request.GET.get('record')
+				print(record_id)
+				size = len(record_id)  # if this is NoneType then it will cause it to error out
+
+				REDCAP = getattr(settings, 'REDCAP', '')
+				dataDir = REDCAP['datadir']
+
+				# grab the identity of the person
+				#pid = get_object_or_404(Identity, pk=record_id)
+				allData = []
+				colHeads = []
+				cols = []
+				# read all files from the data dir and loop through
+				dirs = os.listdir(dataDir)
+				for file in dirs:
+					aFile = dataDir + '/' + file
+					print (aFile)
+					headers, data = read_csv(aFile, record_id)
+					colHeads.append(headers)
+					allData.append(data)
+				print (colHeads)
+				if len(allData) == 0:
+					allData.append("No new data found")
+			except:
+				return Response('Unable to process request, check to make sure you have selected a study participant', status=status.HTTP_400_BAD_REQUEST)
+			return render(request, 'redcap_rest/viewer.html', {'row': allData, 'colHead': colHeads, 'pid':record_id, 'reports':dirs})
+	return Response('User not authorized to view information', status=status.HTTP_401_UNAUTHORIZED)
+
+# read a csv file given a path/filename and record id
+def read_csv(aFile, findid):
+	csv_rows = []
+	headers = []
+	temp = []
+	if len(findid) < 9:
+		findid = findid.rjust(9,'0')
+
+	with open(aFile) as csvfile:
+		reader = csv.DictReader(csvfile)
+		title = reader.fieldnames
+		#print(title)
+		jstr = ""
+		ch = []
+		for h in title:
+			#t = '\"field\": \"' + h + '\",\"title\": \"' + h + '\"'
+			t = "{'field':'" + h + "','title':'" + h + "','sortable':'true'}"
+			#jstr = jstr + t + ","
+			ch.append(ast.literal_eval(t))
+
+		headers.append(ch)
+
+		for row in reader:
+			studyId = row[title[0]]
+			studyId = studyId.rjust(9, '0')
+			#print ('searching for...' + findid + ', check against...' + studyId)
+			if studyId == findid:
+				csv_rows.extend([{title[i]:row[title[i]] for i in range(len(title))}])
+
+	return headers, csv_rows
+
+# redcap specific authentication method which uses 'round robin' authentication
+# and also uses auth tables, see Project table in admin module to add project level auth
+def rcAuthenticate(request):
+	print("Authenticating session...")
+	rtnVal = True
+
+	data=request.data
+	
+	# grab the auth key from redcap
+	authkey = request.data.get('authkey')
+
+	# resend this back to redcap to get full auth info
+	#return Response(data, status=status.HTTP_201_CREATED)
+	REDCAP = getattr(settings, 'REDCAP', '')
+	token = REDCAP['token']
+	host = REDCAP['host']
+	endpoint = REDCAP['endpoint']
+
+	# this will all the desired fields to the payload, encode_multipart_formdata
+	fields = {'authkey': authkey, 'format':'json'}
+	files = []
+	content, body = encode_multipart_formdata(fields, files)
+
+	# connect to host and send request
+	conn = HTTPSConnection(host)
+
+	conn.request("POST", endpoint, body, content)
+
+	res = conn.getresponse()
+	# read the content from the response, type is <byte>
+	data = res.read()
+	#print(type(data))
+	print("Data returned...")
+	print(data)
+	
+	# decode the data body content from <byte> using utf-8 to a string
+	decoded = data.decode("utf-8")
+	# convert the string to a json object
+	response = json.loads(decoded)
+
+	print("Response....")
+	print (response)
+
+	# simple check against the internal user auth and project table
+	# if not found in either table then authorization fails
+	try:
+		m = User.objects.get(username=response['username'])
+		p = Project.objects.get(project_id=response['project_id'])
+
+		print(m)
+		print(p.project_id)
+
+		return True
+	except:
+		return False

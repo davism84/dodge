@@ -15,13 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -129,7 +122,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 REDCAP = {
-    'host': 'www.devctsiredcap.pitt.edu',
+    'host': 'www.ctsiredcap.pitt.edu',
     'endpoint':'/redcap/api/',
-    'token':'<your TOKEN GOES HERE>',
+    'token':'<ADD YOUR REDCAP TOKEN HERE>',
+    'datadir':'n:/development/data/test/Data_2017_01_05',
 }
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '<ADD THE KEY HERE' 

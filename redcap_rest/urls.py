@@ -28,6 +28,7 @@ urlpatterns = [
  	#url(r'^redcap_rest/person/(?P<record_id>[0-9]+)$', views.person, name='person'),	
 	url(r'^redcap_rest/personinfo/$', views.personinfo, name='personinfo'),	 	
 	url(r'^redcap_rest/mrns/$', views.mrns, name='mrns'),
+    url(r'^redcap_rest/dv/$', views.dv, name='dv'),    
 	url(r'^redcap_rest/add/$', views.add, name='add'),	 			
 	url(r'^save/$', views.save, name='save'),	
 ]
