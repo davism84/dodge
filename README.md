@@ -2,8 +2,8 @@
 
 Prerequisites
 - Python 3.5.2
-- Django 1.10.1
-- Django Rest framework
+- Django 1.10.1	  (pip install django)
+- Django Rest framework  (pip install djangorestframework)
 
 REDCap
 
